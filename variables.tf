@@ -28,3 +28,17 @@ variable "certificate_email" {
   type        = string
   description = "email adress that the certificate will be associated with on Let's Encrypt"
 }
+
+
+variable "asg_min_size" {
+  description = "Autoscaling group minimal size"
+}
+
+variable "asg_max_size" {
+  description = "Autoscaling group maximal size"
+}
+
+variable "asg_desired_capacity" {
+  description = "Autoscaling group running number of instances"
+}
+
