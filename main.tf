@@ -143,3 +143,25 @@ resource "aws_security_group" "web_server_sg" {
   }
 }
 
+# Automatic Scaling group Launch configuration
+# file for the webserver configuration
+data "cloudinit_config" "server_config" {
+  gzip          = true
+  base64_encode = true
+  part {
+    content_type = "text/cloud-config"
+    content      = file("${path.module}/scripts/webserver.yml")
+  }
+}
+
+resource "aws_launch_configuration" "as_conf" {
+  name_prefix     = "${var.tag_prefix}-lc"
+  image_id        = var.ami
+  instance_type   = "t2.micro"
+  security_groups = [aws_security_group.web_server_sg.id]
+  user_data       = data.cloudinit_config.server_config.rendered
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
