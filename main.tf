@@ -243,11 +243,6 @@ resource "aws_lb_listener" "front_end" {
   }
 }
 
-data "aws_route53_zone" "selected" {
-  name         = var.dns_zonename
-  private_zone = false
-}
-
 # Automatic Scaling group
 resource "aws_autoscaling_group" "as_group" {
   name                      = "${var.tag_prefix}-asg"
@@ -272,4 +267,12 @@ resource "aws_autoscaling_group" "as_group" {
     delete = "15m"
   }
 
+}
+
+resource "aws_route53_record" "www" {
+  zone_id = data.aws_route53_zone.base_domain.zone_id
+  name    = var.dns_hostname
+  type    = "CNAME"
+  ttl     = "300"
+  records = [aws_lb.lb_application.dns_name]
 }
