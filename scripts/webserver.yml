@@ -1,0 +1,6 @@
+#cloud-config
+runcmd:
+  - apt-get install -y nginx
+  - systemctl enable --no-block nginx 
+  - systemctl start --no-block nginx 
+
