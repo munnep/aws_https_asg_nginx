@@ -165,3 +165,85 @@ resource "aws_launch_configuration" "as_conf" {
     create_before_destroy = true
   }
 }
+
+
+
+# code idea from https://itnext.io/lets-encrypt-certs-with-terraform-f870def3ce6d
+data "aws_route53_zone" "base_domain" {
+  name = var.dns_zonename
+}
+
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+
+resource "acme_registration" "registration" {
+  account_key_pem = tls_private_key.private_key.private_key_pem
+  email_address   = var.certificate_email
+}
+
+resource "acme_certificate" "certificate" {
+  account_key_pem = acme_registration.registration.account_key_pem
+  common_name     = "${var.dns_hostname}.${var.dns_zonename}"
+
+  dns_challenge {
+    provider = "route53"
+
+    config = {
+      AWS_HOSTED_ZONE_ID = data.aws_route53_zone.base_domain.zone_id
+    }
+  }
+
+  depends_on = [acme_registration.registration]
+}
+
+
+
+resource "aws_acm_certificate" "cert" {
+  certificate_body  = acme_certificate.certificate.certificate_pem
+  private_key       = acme_certificate.certificate.private_key_pem
+  certificate_chain = acme_certificate.certificate.issuer_pem
+}
+
+
+
+
+# loadbalancer Target Group
+resource "aws_lb_target_group" "lb_target_group" {
+  name     = "${var.tag_prefix}-target-group"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.main.id
+}
+
+# application load balancer
+resource "aws_lb" "lb_application" {
+  name               = "${var.tag_prefix}-lb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.web_server_sg.id]
+  subnets            = [aws_subnet.public1.id, aws_subnet.public2.id]
+
+  tags = {
+    Environment = "${var.tag_prefix}-lb"
+  }
+}
+
+resource "aws_lb_listener" "front_end" {
+  load_balancer_arn = aws_lb.lb_application.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = aws_acm_certificate.cert.arn
+
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.lb_target_group.arn
+  }
+}
+
+data "aws_route53_zone" "selected" {
+  name         = var.dns_zonename
+  private_zone = false
+}
