@@ -18,6 +18,6 @@ provider "aws" {
 }
 
 provider "acme" {
-  server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
-  # server_url = "https://acme-v02.api.letsencrypt.org/directory"
+  # server_url = "https://acme-staging-v02.api.letsencrypt.org/directory" # Untrusted certificates but unlimited to create
+  server_url = "https://acme-v02.api.letsencrypt.org/directory" # Valid DNS record. Limited to 5 a week to create
 }
