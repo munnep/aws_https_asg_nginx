@@ -73,7 +73,7 @@ terraform plan
 ```
 terraform apply
 ```
-- Terraform output should create 22 resources and show you the public dns string you can use to connect to the webserver
+- Terraform output should create 23 resources and show you the public dns string you can use to connect to the webserver
 ```
 Apply complete! Resources: 23 added, 0 changed, 0 destroyed.
 
