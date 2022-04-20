@@ -1,6 +1,6 @@
 from diagrams import Cluster, Diagram, Edge
 from diagrams.aws.compute import EC2, EC2AutoScaling
-from diagrams.aws.network import VPC, PrivateSubnet, PublicSubnet, InternetGateway, NATGateway, ElbApplicationLoadBalancer
+from diagrams.aws.network import Route53,VPC, PrivateSubnet, PublicSubnet, InternetGateway, NATGateway, ElbApplicationLoadBalancer
 from diagrams.onprem.compute import Server
 
 # Variables
@@ -18,6 +18,7 @@ with Diagram(
 ) as diag:
     # Non Clustered
     user = Server("user")
+    route53=Route53("DNS record in AWS")
 
     # Cluster 
     with Cluster("vpc"):
@@ -38,9 +39,11 @@ with Diagram(
                 ec2_asg_web_server = EC2AutoScaling("Autoscaling Group \n Webserver")
  
     # Diagram
-    user >> [loadbalancer1, 
-             loadbalancer2] >> ec2_asg_web_server 
+    user >>  route53
+    user >>  [ loadbalancer1, 
+              loadbalancer2] >> ec2_asg_web_server 
 
     ec2_asg_web_server >> nat_gateway >> igw_gateway >> Server("APT Ubuntu")
-
+    
+    route53
 diag

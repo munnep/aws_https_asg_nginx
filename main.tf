@@ -267,6 +267,10 @@ resource "aws_autoscaling_group" "as_group" {
     delete = "15m"
   }
 
+  depends_on = [
+    aws_nat_gateway.NAT,aws_security_group.web_server_sg,aws_internet_gateway.gw
+  ]
+
 }
 
 resource "aws_route53_record" "www" {
