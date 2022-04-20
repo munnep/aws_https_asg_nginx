@@ -36,11 +36,11 @@ The repo assumes you have no certificates and want to create them using Let's En
 
 - Clone the repository to your local machine
 ```
-git clone https://github.com/munnep/aws_https_loadbalancer_nginx.git
+git clone https://github.com/munnep/aws_https_asg_nginx.git
 ```
 - Go to the directory
 ```
-cd aws_https_loadbalancer_nginx
+cd aws_https_asg_nginx
 ```
 - Set your AWS credentials
 ```
