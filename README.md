@@ -1,6 +1,6 @@
 # aws_https_loadbalancer_nginx
 
-In this repository you will deploy an auto scaling group with a webserver EC2 behind an application load balancer with certificates with Terraform on AWS. 
+In this repository you will deploy an auto scaling group with a webserver EC2 behind an application load balancer and certificates with Terraform on AWS. 
 
 Steps involved are: 
 - Create a VPC with subnets, routing tables, internet gateway and nat gateway
@@ -13,7 +13,7 @@ Steps involved are:
 
 
 Detailed diagram of the environment:  
-![](diagram/vpc-diagram.png)     
+![](diagram/diagram_vpc_asg.png)     
 
 There is a short [README.md](manual_steps/README.md) on how to do all this manually without Terraform. This is just to give you a better idea on the steps involved. Please use this only if you do not want to use Terraform. 
 
@@ -36,11 +36,11 @@ The repo assumes you have no certificates and want to create them using Let's En
 
 - Clone the repository to your local machine
 ```
-git clone https://github.com/munnep/aws_https_loadbalancer_nginx.git
+git clone https://github.com/munnep/aws_https_asg_nginx.git
 ```
 - Go to the directory
 ```
-cd aws_https_loadbalancer_nginx
+cd aws_https_asg_nginx
 ```
 - Set your AWS credentials
 ```
@@ -73,7 +73,7 @@ terraform plan
 ```
 terraform apply
 ```
-- Terraform output should create 22 resources and show you the public dns string you can use to connect to the webserver
+- Terraform output should create 23 resources and show you the public dns string you can use to connect to the webserver
 ```
 Apply complete! Resources: 23 added, 0 changed, 0 destroyed.
 
