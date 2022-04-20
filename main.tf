@@ -167,7 +167,6 @@ resource "aws_launch_configuration" "as_conf" {
 }
 
 
-
 # code idea from https://itnext.io/lets-encrypt-certs-with-terraform-f870def3ce6d
 data "aws_route53_zone" "base_domain" {
   name = var.dns_zonename
@@ -268,7 +267,7 @@ resource "aws_autoscaling_group" "as_group" {
   }
 
   depends_on = [
-    aws_nat_gateway.NAT,aws_security_group.web_server_sg,aws_internet_gateway.gw
+    aws_nat_gateway.NAT, aws_security_group.web_server_sg, aws_internet_gateway.gw
   ]
 
 }
